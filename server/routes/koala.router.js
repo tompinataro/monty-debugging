@@ -5,7 +5,7 @@ const pool = require('../modules/pool');
 // GET
 koalaRouter.get('/', (req, res) => {
     const sqlQuery = `
-        SELECT * FROM "koala" 
+        SELECT * FROM "koalas" 
         ORDER BY "name";
     `;
     pool.query(sqlQuery)
@@ -29,7 +29,7 @@ koalaRouter.post('/', (req, res) => {
         req.body.age,
         req.body.color,
         req.body.readyForTransfer,
-        req.body.notes
+        req.body.description
     ];
 
     pool.query(sqlQuery, sqlParams)
@@ -44,37 +44,40 @@ koalaRouter.post('/', (req, res) => {
 
 // PUT
 koalaRouter.put('/:koalaId', (req, res) => {
-    const koalaId = req.params.id;
-    console.log(`PUT /${koalaId}`, req.body);
+    const id = req.params.koalaId; // Use koalaId instead of id
+    const readyToTransfer = req.body.readyToTransfer; // Get readyToTransfer from the request body
 
-    const sqlQuery = `
+    const sqlText = `
         UPDATE "koalas" 
-        SET "readyToTransfer"=$1
-        WHERE id=$2;
+        SET "readyToTransfer"=$2
+        WHERE id=$1;
     `;
-    const sqlParams = [koalaId, req.body.readyToTransfer];
+    const params = [id, readyToTransfer]; // Make sure params is defined correctly
 
-    pool.query(sqlQuery, sqlParams)
+    pool.query(sqlText, params)
         .then(response => {
             console.log(`PUT /koalas/${id} succeeded!`);
+            res.sendStatus(204); // No content, indicating success
         })
         .catch(err => {
-            console.log('PUT /koalas/:id failed', err);
-            res.sendStatus(500);
+            console.log('PUT /koalas/:koalaId failed', err);
+            res.sendStatus(500); // Internal server error
         });
 });
 
-// DELETE
-koalaRouter.delete('/koalas/:id', (req, res) => {
-    const koalaId = req.params.id;
-    const sqlQuery = `
-        DELETE FROM koalas;
-    `;
 
-    pool.query(sqlQuery, [koalaId])
+// DELETE
+koalaRouter.delete('/:id', (req, res) => {
+    const id = req.params.id
+    const sqlText = `
+        DELETE FROM "koalas" WHERE "id" = $1;
+    `;
+    let params = [id];
+
+    pool.query(sqlText, params)
         .then((response) => {
-            console.log(`we deleted the koala with id ${koalaId}`);
-            res.send(200);
+           
+            res.sendStatus(200);
         }).catch((err) => {
             console.log('something went wrong in koalaRouter.delete', err);
             res.sendStatus(500)

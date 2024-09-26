@@ -3,45 +3,19 @@
 ## Describe
 
 **What is happening? What do you see?**
-Database table function was not called...
+
 
 **What _should_ be happening? What do you want to see?**
 
-there should be a call of the function to populate the table on the DOM
+
 ## Isolate
 
 **Is this problem client side? Server side? Elsewhere? How do you know?**
-the front end on index.html
 
 **What line of code is the error happening on?**
 
 Paste the relevant code here:
-```function onBready() {
-  // load existing koalas on page load
-  getKoalas();
-}
-
-onReady();
-
-  // ajax call to server to get koalas
-  axios({
-    method: 'GET',
-    url: '/koalas'
-  }).then(function(response) {
-    renderKoalas(response);
-  }).catch(function (error) {
-    console.log('error in GET on client.js', error);
-  });
-}
-// GET
-koalaRouter.get('/', (req, res) => {
-    const sqlQuery = `
-        SELECT * FROM "koala " <<<< added an "s"
-        ORDER BY "name";
-    `;
-function renderKoalas(koalas) {
-  let koalaList = document.getElementById('.koala-list');
-  koalaList.innerHTML = '';
+```js
 ```
 
 And describe what it's doing wrong:
